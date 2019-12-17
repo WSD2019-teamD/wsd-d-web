@@ -1,0 +1,22 @@
+<div>
+    <h1><a href="/">Django Girls Blog</a></h1>
+</div>
+
+
+{% block body %}
+    <form action="{% url 'show_list' %}" method="post">
+        {% csrf_token %}
+        <label>いいね数:<input type="number"  name="likes_count" vluee="1000"></label>
+        <input type="submit" value="送信">
+    </form>
+
+    
+{% endblock %}
+
+{% for row in rows %}
+    <div>
+        <h2>title: {{ row.title }}</h2>
+        <h3>url: <a href="{{ row.url}}">{{ row.url}}</a></h3>
+        
+    </div>
+{% endfor %}
