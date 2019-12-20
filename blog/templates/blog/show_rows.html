@@ -1,22 +1,78 @@
-<div>
-    <h1><a href="/">Django Girls Blog</a></h1>
-</div>
+<!doctype html>
+<html lang="ja">
 
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-{% block body %}
-    <form action="{% url 'show_list' %}" method="post">
-        {% csrf_token %}
-        <label>いいね数:<input type="number"  name="likes_count" vluee="1000"></label>
-        <input type="submit" value="送信">
-    </form>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    
-{% endblock %}
+    <title>Hello, world!</title>
+</head>
 
-{% for row in rows %}
+<body>
     <div>
-        <h2>title: {{ row.title }}</h2>
-        <h3>url: <a href="{{ row.url}}">{{ row.url}}</a></h3>
-        
+        <h1><a href="/">Django </a></h1>
     </div>
-{% endfor %}
+    <div class="container">
+        {% block body %}
+        <form action="{% url 'show_list' %}" method="post">
+            {% csrf_token %}
+            <label>いいね数:<input type="number" name="likes_count" value="{{likes_count}}"></label>
+            <input type="submit" class="btn btn-primary" value="送信">
+        </form>
+
+
+        {% endblock %}
+
+        <div class="card">
+    <div class="card-header">いいね数：{{ likes_count }}の記事 件数：{{count}}件</div>
+            <div class="card-body">
+              
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for row in rows %}
+                <div>
+                   
+                    <li class="list-group-item">
+                        <h2>title: {{ row.title }}</h2>
+                        <h3>url: <a href="{{ row.url}}"　 target="_blank"　rel="noopener noreferrer">{{ row.url}}</a></h3>
+
+                    </li>
+                </div>
+                {% endfor %}
+               
+               
+            </ul>
+            <!-- <nav aria-label="ページ送りの実例">
+                <ul class="pagination">
+                  <li class="page-item"><a class="page-link" href="#">前へ</a></li>
+                  <li class="page-item"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item"><a class="page-link" href="#">次へ</a></li>
+                </ul>
+              </nav> -->
+        </div>
+
+       
+
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+        
+</body>
+
+</html>

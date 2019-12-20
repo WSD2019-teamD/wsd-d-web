@@ -16,10 +16,13 @@ def mysql_read_list(request):
     except (KeyError):
        pass
 
+    
     #rows = RawFromApi.objects.using('mysql').filter(likes_count__gte=likes_count)
     rows = RawFromApi.objects.using('mysql').filter(likes_count=likes_count)
-    return render(request,'blog/show_rows.html',{'rows':rows})
-
+    count =len(rows)
+    return render(request,'blog/show_rows.html',
+    {'rows':rows,'likes_count':likes_count,'request':request,'count':count})
+   
 def mysql_seach(request):
     rows = RawFromApi.objects.using('mysql').get(id=3)
     return render(request,'blog/show_rows.html',{'rows':rows})
