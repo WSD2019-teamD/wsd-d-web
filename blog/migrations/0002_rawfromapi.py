@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('user_permanent_id', models.IntegerField(blank=True, null=True)),
                 ('url', models.CharField(blank=True, max_length=100, null=True)),
                 ('html', models.TextField(blank=True, null=True)),
-                ('markdown', models.TextField(blank=True, null=True)),
+                ('tokens', models.TextField(blank=True, null=True)),
             ],
             options={
                 'db_table': 'raw_from_api',

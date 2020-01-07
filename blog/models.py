@@ -29,7 +29,7 @@ class RawFromApi(models.Model):
     user_permanent_id = models.IntegerField(blank=True, null=True)
     url = models.CharField(max_length=100, blank=True, null=True)
     html = models.TextField(blank=True, null=True)
-    markdown = models.TextField(blank=True, null=True)
+    tokens = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = False
