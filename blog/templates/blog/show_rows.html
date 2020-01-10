@@ -21,20 +21,28 @@
         {% block body %}
         <form action="{% url 'show_list' %}" method="post">
             {% csrf_token %}
-            <div class="row">
-                <label>いいね数:<input type="number" name="likes_count" value="{{likes_count}}"></label>
-            </div>
+
 
             <div class="row">
-                <label>url(いいね履歴):<input type="text" name="url" value="{{user_likes_url}}"></label>
+                <div class="col-6 ">
+                    <div class="form-group">
+                        <label>いいね履歴(url)</label>
+                        <input type="text" name="url" class="form-control" value="{{user_likes_url}}" />
+                        <input type="submit" class="btn btn-primary mt-3" value="送信">
+                    </div>
+                </div>
+                <div class="col-6">
+
+                </div>
+               
             </div>
 
-            <input type="submit" class="btn btn-primary" value="送信">
+
         </form>
         {% endblock %}
 
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">いいね履歴</div>
                     <div class="card-body">
@@ -61,40 +69,7 @@
                 </div>
 
             </div>
-            <div class="col-sm-6">
-                <div class="card">
-                    <div class="card-header">いいね数：{{ likes_count }}の記事 件数：{{count}}件</div>
-                    <div class="card-body">
 
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        {% for row in rows %}
-                        <div>
-
-                            <li class="list-group-item">
-                                <h2>title: {{ row.title }}</h2>
-                                <h3>url: <a href="{{ row.url}}" 　 target="_blank"
-                                        　rel="noopener noreferrer">{{ row.url}}</a>
-                                </h3>
-
-
-                            </li>
-                        </div>
-                        {% endfor %}
-
-
-                    </ul>
-                    <!-- <nav aria-label="ページ送りの実例">
-                <ul class="pagination">
-                  <li class="page-item"><a class="page-link" href="#">前へ</a></li>
-                  <li class="page-item"><a class="page-link" href="#">1</a></li>
-                  <li class="page-item"><a class="page-link" href="#">2</a></li>
-                  <li class="page-item"><a class="page-link" href="#">3</a></li>
-                  <li class="page-item"><a class="page-link" href="#">次へ</a></li>
-                </ul>
-              </nav> -->
-                </div>
-            </div>
         </div>
 
 

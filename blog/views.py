@@ -15,7 +15,7 @@ def mysql_read_list(request):
     likes_count=100
     user_likes_url="https://qiita.com/toutou/like"
     try:
-        likes_count=request.POST['likes_count']
+        # likes_count=request.POST['likes_count']
         user_likes_url = str(request.POST['url'])
     except (KeyError):
         pass
@@ -35,11 +35,12 @@ def mysql_read_list(request):
         url_title_id_list.append([url,atag.string,article_id])
 
     #rows = RawFromApi.objects.using('mysql').filter(likes_count__gte=likes_count)
-    rows = RawFromApi.objects.using('mysql').filter(likes_count=likes_count)
-    count =len(rows)
+
+    # rows = RawFromApi.objects.using('mysql').filter(likes_count=likes_count)
+    # count =len(rows)
+
     return render(request,'blog/show_rows.html',
-    {'rows':rows,'likes_count':likes_count,'request':request,
-    'count':count,'url_list':url_title_id_list,'user_likes_url':user_likes_url})
+    {'request':request,'url_list':url_title_id_list,'user_likes_url':user_likes_url})
    
 def mysql_seach(request):
     rows = RawFromApi.objects.using('mysql').get(id=3)
