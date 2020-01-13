@@ -26,6 +26,7 @@ class Migration(migrations.Migration):
                 ('url', models.CharField(blank=True, max_length=100, null=True)),
                 ('html', models.TextField(blank=True, null=True)),
                 ('tokens', models.TextField(blank=True, null=True)),
+                ('smilar_articles', models.TextField(blank=True, null=True)),
             ],
             options={
                 'db_table': 'raw_from_api',

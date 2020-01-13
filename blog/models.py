@@ -30,6 +30,7 @@ class RawFromApi(models.Model):
     url = models.CharField(max_length=100, blank=True, null=True)
     html = models.TextField(blank=True, null=True)
     tokens = models.TextField(blank=True, null=True)
+    similar_articles = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = False

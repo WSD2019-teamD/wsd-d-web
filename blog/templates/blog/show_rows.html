@@ -10,67 +10,119 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>Pre-D</title>
 </head>
 
 <body>
     <div>
-        <h1><a href="/">Django </a></h1>
+        <h1><a href="/">Pre-D</a></h1>
     </div>
+
     <div class="container">
+        <div class="mx-auto">
+            <h2>Qiitaのいいね履歴から記事を推薦します</h2>
+        </div>
         {% block body %}
         <form action="{% url 'show_list' %}" method="post">
             {% csrf_token %}
 
 
             <div class="row">
-                <div class="col-6 ">
+                <div class="col-12">
                     <div class="form-group">
                         <label>いいね履歴(url)</label>
-                        <input type="text" name="url" class="form-control" value="{{user_likes_url}}" />
-                        <input type="submit" class="btn btn-primary mt-3" value="送信">
+                        <input type="text" name="url" class="form-control" value="{{user_likes_url}}"
+                            placeholder="https://qiita.com/your_name/like" />
+                        <input type="submit" class="btn btn-primary mt-3" value="送信" name="button" />
                     </div>
                 </div>
-                <div class="col-6">
-
-                </div>
-               
             </div>
 
 
-        </form>
-        {% endblock %}
 
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-header">いいね履歴</div>
-                    <div class="card-body">
+            {% endblock %}
 
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        {% for url in url_list %}
-                        <div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">推薦記事</div>
+                        <div class="card-body">
+                            <!-- {{rows}} -->
 
-                            <li class="list-group-item">
-                                <h3>title: {{ url.1 }}</h3>
-                                <h3>url: <a href="{{ url.0}}" 　 target="_blank"
-                                        　rel="noopener noreferrer">{{ url.0}}</a></h3>
-                                <h3>article_id: {{ url.2 }}</h3>
-                                <!-- <h3>url: <a href="{{ row.url}}" 　 target="_blank"
+                            {% for recommend_article in recommend_articles %}
+                            <div>
+
+                                <li class="list-group-item">
+
+                                    <h3>title: {{ recommend_article.title }}</h3>
+                                    <h3>url: <a href="{{ recommend_article.url}}" 　 target="_blank"
+                                            　rel="noopener noreferrer">{{ recommend_article.url}}</a></h3>
+                                    <h3>類似度: {{ recommend_article.similarities }}</h3>
+                                    <h3>いいね数: {{ recommend_article.likes_count }}</h3>
+                                    <h3>作成日: {{ recommend_article.created_at }}</h3>
+                                    <!-- <h3>url: <a href="{{ row.url}}" 　 target="_blank"
                                     　rel="noopener noreferrer">{{ row.url}}</a>
                             </h3> -->
 
 
-                            </li>
+                                </li>
+                            </div>
+                            {% endfor %}
+
+                            <div class="pager">
+                                <!-- 前のページへのリンク -->
+                                {% if recommend_articles.has_previous %}
+                                <!-- <a href="?p={{ recommend_articles.previous_page_number }}">前へ</a> -->
+
+                                <button type="submit" class="btn btn-primary mt-3 active"
+                                    value="{{ recommend_articles.previous_page_number }}" name="button">
+                                    前へ
+                                </button>
+                                {% endif %}
+
+                                <!-- 現在のページ番号と全体のページ数 -->
+                                {% with ''|center:recommend_articles.paginator.num_pages as range %}
+                                {% for _ in range %}
+                                
+                                {% if recommend_articles.number == forloop.counter %}
+                                <button type="submit" class="btn btn-info mt-3 active" value="{{ forloop.counter }}"
+                                    name="button">
+                                    {{forloop.counter}}
+                                </button>
+
+                                {% else %}
+                                <button type="submit" class="btn btn-info mt-3 " value="{{ forloop.counter }}"
+                                    name="button">
+                                    {{forloop.counter}}
+                                </button>
+                                {% endif %}
+                                
+                                {% endfor %}
+                                {% endwith %}
+                                <span>
+                                    {{ recommend_articles.number }} / {{ recommend_articles.paginator.num_pages }}
+                                </span>
+
+                                <!-- 次のページへのリンク -->
+                                {% if recommend_articles.has_next %}
+                                <!-- <a href="?p={{ recommend_articles.next_page_number }}">次へ</a> -->
+                                <button type="submit" class="btn btn-primary mt-3"
+                                    value="{{ recommend_articles.next_page_number }}" name="button">
+                                    次へ
+                                </button>
+
+                                {% endif %}
+                            </div>
+
+
                         </div>
-                        {% endfor %}
+
+                    </div>
 
                 </div>
 
             </div>
-
-        </div>
+        </form>
 
 
 
