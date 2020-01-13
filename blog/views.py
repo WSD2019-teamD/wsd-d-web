@@ -18,57 +18,53 @@ def post_list(request):
     return render(request, 'blog/post_list.html', {'posts': posts})
 
 def mysql_read_list(request):
-    likes_count=100
+   
     user_likes_url=""
     try:
-        # likes_count=request.POST['likes_count']
         user_likes_url = str(request.POST['url'])
-    except (KeyError):
-        pass
+        #get html
+        html = ureq.urlopen(user_likes_url)
     
-    if(user_likes_url=="") :
-        return render(request,'blog/show_rows.html',
-    {'request':request,'url_list':[],'user_likes_url':""})
-    
-    #get html
-    html = ureq.urlopen(user_likes_url)
-    
-    #set BueatifulSoup
-    soup = BeautifulSoup(html, "html.parser")
-    atags=soup.find_all("a", attrs={"class", "u-link-no-underline"})
-    url_title_id_list = list()
-    user_article_id = list()
-    for atag in atags:
-        url='https://qiita.com'+str(atag.get('href'))
-        splited_url=url.split('/')
-        article_id = splited_url[-1]
-        url_title_id_list.append([url,atag.string,article_id])
-        user_article_id.append(article_id)
+        #set BueatifulSoup
+        soup = BeautifulSoup(html, "html.parser")
+        atags=soup.find_all("a", attrs={"class", "u-link-no-underline"})
+        url_title_id_list = list()
+        user_article_id = list()
+        for atag in atags:
+            url='https://qiita.com'+str(atag.get('href'))
+            splited_url=url.split('/')
+            article_id = splited_url[-1]
+            url_title_id_list.append([url,atag.string,article_id])
+            user_article_id.append(article_id)
 
-    dict_similar_articles = dict()
-    for url_title_id in url_title_id_list: 
-        article_id=url_title_id[2]
-        record = RawFromApi.objects.using('mysql').filter(article_id=article_id).first()
-        if record == None:
-            #record dose not exist on qiita_db
-            continue
-        
-        #辞書の追加（既存のキーはアップデートされる）
-        dict_similar_articles.update(json.loads(record.similar_articles)) 
+        dict_similar_articles = dict()
+        for url_title_id in url_title_id_list: 
+            article_id=url_title_id[2]
+            record = RawFromApi.objects.using('mysql').filter(article_id=article_id).first()
+            if record == None:
+                #record dose not exist on qiita_db
+                continue
+            
+            #辞書の追加（既存のキーはアップデートされる）
+            dict_similar_articles.update(json.loads(record.similar_articles)) 
 
-    #推薦リストからいいね履歴を削除
-    dict_similar_articles=drop_key(user_article_id,dict_similar_articles)
-   
-    #推薦記事をソートして、article_idのリストを返す(templateにdict_similar_articlesとrecommend_article_idsを渡す)
-    all_recommend_articles = sort_articles(dict_similar_articles)
-    paginator = Paginator(all_recommend_articles, 20) # 1ページに20件表示
-    p = request.POST['button'] # URLのパラメータから現在のページ番号を取得
-    print(p)
-    recommend_articles = paginator.get_page(p) # 指定のページのArticleを取得
- 
-    return render(request,'blog/show_rows.html',
-    {'request':request,'url_list':url_title_id_list,'user_likes_url':user_likes_url,
-    'recommend_articles':recommend_articles})
+        #推薦リストからいいね履歴を削除
+        dict_similar_articles=drop_key(user_article_id,dict_similar_articles)
+    
+        #推薦記事をソートして、article_idのリストを返す(templateにdict_similar_articlesとrecommend_article_idsを渡す)
+        all_recommend_articles = sort_articles(dict_similar_articles)
+        paginator = Paginator(all_recommend_articles, 20) # 1ページに20件表示
+        p = request.POST['button'] # URLのパラメータから現在のページ番号を取得
+    
+        recommend_articles = paginator.get_page(p) # 指定のページのArticleを取得
+    
+        return render(request,'blog/show_result.html',
+        {'request':request,'url_list':url_title_id_list,'user_likes_url':user_likes_url,
+        'recommend_articles':recommend_articles})
+    except :
+        return render(request,'blog/show.html',
+     {'request':request,'url_list':[],'user_likes_url':'',
+    'recommend_articles':[]})
    
 def mysql_seach(request):
     rows = RawFromApi.objects.using('mysql').get(id=3)
