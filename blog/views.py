@@ -79,16 +79,12 @@ def drop_key(key_list,dic):
 
 def sort_articles(dic):
     #辞書からidと類似度のリストのリストを作りsortしたリストを返す
-    #下のはイメージで書いてる
-    simi = 1
-    cre = 1
-    like = 1
+    
     articleId_scores = []
     for key,value in dic.items():
         today=datetime.datetime.today()
         created_at = datetime.datetime.strptime(value['created_at'], '%Y-%m-%d %H:%M:%S')
         td = abs(today -created_at)
-     
         score =  200*float(value['similarities']) + float(value['likes_count'])/5 - td.days/100
         articleId_scores.append([key,score])
 
