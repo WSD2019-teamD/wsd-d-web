@@ -18,9 +18,15 @@ def post_list(request):
     return render(request, 'blog/post_list.html', {'posts': posts})
 
 def mysql_read_list(request):
+    
+    
    
     user_likes_url=""
     try:
+        p_dist = int(request.POST['p_dist']) if (int(request.POST['p_dist']) != 0) else 1 
+        p_like = int(request.POST['p_like']) if (int(request.POST['p_like']) != 0) else 1 
+        p_date = int(request.POST['p_date']) if (int(request.POST['p_date']) != 0) else 1 
+    
         user_likes_url = str(request.POST['url'])
         #get html
         html = ureq.urlopen(user_likes_url)
@@ -46,21 +52,28 @@ def mysql_read_list(request):
                 continue
             
             #辞書の追加（既存のキーはアップデートされる）
-            dict_similar_articles.update(json.loads(record.similar_articles)) 
-
+            tmp_articles = json.loads(record.similar_articles)
+            for key,val_dic in tmp_articles.items():
+                val_dic['origin_title'] = record.title
+                val_dic['origin_url'] = record.url
+                tmp_articles[key]=val_dic 
+                
+            #dict_similar_articles.update(json.loads(record.similar_articles)) 
+            dict_similar_articles.update(tmp_articles) 
+     
         #推薦リストからいいね履歴を削除
         dict_similar_articles=drop_key(user_article_id,dict_similar_articles)
     
         #推薦記事をソートして、article_idのリストを返す(templateにdict_similar_articlesとrecommend_article_idsを渡す)
-        all_recommend_articles = sort_articles(dict_similar_articles)
+        all_recommend_articles = sort_articles(dict_similar_articles,p_dist,p_like,p_date)
         paginator = Paginator(all_recommend_articles, 20) # 1ページに20件表示
         p = request.POST['button'] # URLのパラメータから現在のページ番号を取得
-    
+      
         recommend_articles = paginator.get_page(p) # 指定のページのArticleを取得
-    
+       
         return render(request,'blog/show_result.html',
         {'request':request,'url_list':url_title_id_list,'user_likes_url':user_likes_url,
-        'recommend_articles':recommend_articles})
+        'recommend_articles':recommend_articles,'p_dist':p_dist,'p_like':p_like,'p_date':p_date})
     except :
         return render(request,'blog/show.html',
      {'request':request,'url_list':[],'user_likes_url':'',
@@ -71,13 +84,11 @@ def mysql_seach(request):
     return render(request,'blog/show_rows.html',{'rows':rows})
 
 def drop_key(key_list,dic):
-
     for key in key_list:
         value=dic.pop(key,None)
-     
     return dic
 
-def sort_articles(dic):
+def sort_articles(dic,p_dist,p_like,p_date):
     #辞書からidと類似度のリストのリストを作りsortしたリストを返す
     
     articleId_scores = []
@@ -85,7 +96,7 @@ def sort_articles(dic):
         today=datetime.datetime.today()
         created_at = datetime.datetime.strptime(value['created_at'], '%Y-%m-%d %H:%M:%S')
         td = abs(today -created_at)
-        score =  200*float(value['similarities']) + float(value['likes_count'])/5 - td.days/100
+        score =  p_dist*(1-float(value['distance'])) + float(value['likes_count'])/p_like - td.days/p_date
         articleId_scores.append([key,score])
 
     articleId_scores.sort(key=lambda x: x[1],reverse=True)

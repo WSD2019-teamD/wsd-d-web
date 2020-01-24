@@ -17,6 +17,7 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+
 class RawFromApi(models.Model):
     article_id = models.CharField(unique=True, max_length=50, blank=True, null=True)
     title = models.CharField(max_length=300, blank=True, null=True)
@@ -37,10 +38,10 @@ class RawFromApi(models.Model):
         db_table = 'raw_from_api'
 
 
-# class Test(models.Model):
-#     id = models.IntegerField(blank=True, null=True)
-#     name = models.CharField(max_length=10, blank=True, null=True)
+class ArticleVector(models.Model):
+    article_id = models.CharField(unique=True, max_length=50, blank=True, null=True)
+    vector = models.TextField(blank=True, null=True)
 
-#     class Meta:
-#         managed = False
-#         db_table = 'test'
+    class Meta:
+        managed = False
+        db_table = 'article_vector'
