@@ -24,3 +24,4 @@ urlpatterns = [
     path('', include('blog.urls')),
 ]
 urlpatterns += static(settings.CERT_URL, document_root=settings.CERT_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
