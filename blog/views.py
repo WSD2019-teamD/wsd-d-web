@@ -88,7 +88,7 @@ def read_vec60(request):
       
         recommend_articles = paginator.get_page(p) # 指定のページのArticleを取得
        
-        return render(request,'blog/show_result_vec50.html',
+        return render(request,'blog/show_result_vec60.html',
         {'request':request,'url_list':url_title_id_list,'user_likes_url':user_likes_url,
         'recommend_articles':recommend_articles,'p_dist':p_dist,'p_like':p_like,'p_date':p_date})
     except Exception as e:
@@ -96,7 +96,7 @@ def read_vec60(request):
         print('type:' + str(type(e)))
         print('args:' + str(e.args))
         print('e自身:' + str(e))
-        return render(request,'blog/show_vec50.html',
+        return render(request,'blog/show_vec60.html',
      {'request':request,'url_list':[],'user_likes_url':'',
     'recommend_articles':[]})
     
