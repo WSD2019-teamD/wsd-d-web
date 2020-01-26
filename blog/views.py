@@ -60,7 +60,6 @@ def read_vec60(request):
                     continue
             
             #辞書の追加（既存のキーはアップデートされる）
-            tmp_articles = json.loads(record.similar_articles_vec60)
             for key,val_dic in tmp_articles.items():
                 val_dic['origin_title'] = origin_article_title
                 val_dic['origin_url'] = origin_article_url
