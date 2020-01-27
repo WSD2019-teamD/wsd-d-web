@@ -20,6 +20,10 @@ def post_list(request):
 
 def read_vec60(request):
     user_likes_url=""
+    if request.method == 'GET':
+        return render(request,'blog/show_vec60.html',
+     {'request':request,'url_list':[],'user_likes_url':'',
+    'recommend_articles':[]})
     try:
         p_dist = int(request.POST['p_dist']) if (int(request.POST['p_dist']) != 0) else 1 
         p_like = int(request.POST['p_like']) if (int(request.POST['p_like']) != 0) else 1 
@@ -33,21 +37,22 @@ def read_vec60(request):
         soup = BeautifulSoup(html, "html.parser")
         atags=soup.find_all("a", attrs={"class", "u-link-no-underline"})
         url_title_id_list = list()
-        user_article_id = list()
+        user_article_ids = list()
         for atag in atags:
             url='https://qiita.com'+str(atag.get('href'))
             splited_url=url.split('/')
             article_id = splited_url[-1]
             url_title_id_list.append([url,atag.string,article_id])
-            user_article_id.append(article_id)
+            user_article_ids.append(article_id)
 
+        records=RawFromApi.objects.using('mysql').filter(article_id__in=user_article_ids)
         dict_similar_articles = dict()
-        for url_title_id in url_title_id_list: 
-            origin_article_url=url_title_id[0]
-            origin_article_title=url_title_id[1]
-            origin_article_id=url_title_id[2]
+        loop=0
+        for record in records: 
+            origin_article_url=url_title_id_list[loop][0]
+            origin_article_title=url_title_id_list[loop][1]
+            origin_article_id=url_title_id_list[loop][2]
 
-            record=RawFromApi.objects.using('mysql').filter(article_id=origin_article_id).first()
             if record == None:
                 continue
            
@@ -76,9 +81,10 @@ def read_vec60(request):
                 
             #dict_similar_articles.update(json.loads(record.similar_articles)) 
             dict_similar_articles.update(tmp_articles) 
+            loop+=1
      
         #推薦リストからいいね履歴を削除
-        dict_similar_articles=drop_key(user_article_id,dict_similar_articles)
+        dict_similar_articles=drop_key(user_article_ids,dict_similar_articles)
     
         #推薦記事をソートして、article_idのリストを返す(templateにdict_similar_articlesとrecommend_article_idsを渡す)
         all_recommend_articles = sort_articles(dict_similar_articles,p_dist,p_like,p_date)
@@ -90,17 +96,18 @@ def read_vec60(request):
         return render(request,'blog/show_result_vec60.html',
         {'request':request,'url_list':url_title_id_list,'user_likes_url':user_likes_url,
         'recommend_articles':recommend_articles,'p_dist':p_dist,'p_like':p_like,'p_date':p_date})
-    except Exception as e:
-        print('=== エラー内容 ===')
-        print('type:' + str(type(e)))
-        print('args:' + str(e.args))
-        print('e自身:' + str(e))
+    except :
         return render(request,'blog/show_vec60.html',
      {'request':request,'url_list':[],'user_likes_url':'',
     'recommend_articles':[]})
     
 def read_vec50(request):
     user_likes_url=""
+    if request.method == 'GET':
+        return render(request,'blog/show_vec50.html',
+     {'request':request,'url_list':[],'user_likes_url':'',
+    'recommend_articles':[]})
+
     try:
         p_dist = int(request.POST['p_dist']) if (int(request.POST['p_dist']) != 0) else 1 
         p_like = int(request.POST['p_like']) if (int(request.POST['p_like']) != 0) else 1 
@@ -114,21 +121,22 @@ def read_vec50(request):
         soup = BeautifulSoup(html, "html.parser")
         atags=soup.find_all("a", attrs={"class", "u-link-no-underline"})
         url_title_id_list = list()
-        user_article_id = list()
+        user_article_ids = list()
         for atag in atags:
             url='https://qiita.com'+str(atag.get('href'))
             splited_url=url.split('/')
             article_id = splited_url[-1]
             url_title_id_list.append([url,atag.string,article_id])
-            user_article_id.append(article_id)
-
+            user_article_ids.append(article_id)
+        
+        records=RawFromApi.objects.using('mysql').filter(article_id__in=user_article_ids)
         dict_similar_articles = dict()
-        for url_title_id in url_title_id_list: 
-            origin_article_url=url_title_id[0]
-            origin_article_title=url_title_id[1]
-            origin_article_id=url_title_id[2]
+        loop=0
+        for record in records:
+            origin_article_url=url_title_id_list[loop][0]
+            origin_article_title=url_title_id_list[loop][1]
+            origin_article_id=url_title_id_list[loop][2]
             
-            record=RawFromApi.objects.using('mysql').filter(article_id=origin_article_id).first()
             if record == None:
                 continue
 
@@ -159,9 +167,10 @@ def read_vec50(request):
                 
             #dict_similar_articles.update(json.loads(record.similar_articles)) 
             dict_similar_articles.update(tmp_articles) 
+            loop+=1
      
         #推薦リストからいいね履歴を削除
-        dict_similar_articles=drop_key(user_article_id,dict_similar_articles)
+        dict_similar_articles=drop_key(user_article_ids,dict_similar_articles)
     
         #推薦記事をソートして、article_idのリストを返す(templateにdict_similar_articlesとrecommend_article_idsを渡す)
         all_recommend_articles = sort_articles(dict_similar_articles,p_dist,p_like,p_date)
@@ -173,11 +182,12 @@ def read_vec50(request):
         return render(request,'blog/show_result_vec50.html',
         {'request':request,'url_list':url_title_id_list,'user_likes_url':user_likes_url,
         'recommend_articles':recommend_articles,'p_dist':p_dist,'p_like':p_like,'p_date':p_date})
-    except Exception as e:
-        print('=== エラー内容 ===')
-        print('type:' + str(type(e)))
-        print('args:' + str(e.args))
-        print('e自身:' + str(e))
+    # except Exception as e:
+    #     print('=== エラー内容 ===')
+    #     print('type:' + str(type(e)))
+    #     print('args:' + str(e.args))
+    #     print('e自身:' + str(e))
+    except :
         return render(request,'blog/show_vec50.html',
      {'request':request,'url_list':[],'user_likes_url':'',
     'recommend_articles':[]})

@@ -34,8 +34,10 @@
                 <div class="row form-group">
                     <div class="col-sm-10">
                         <label>いいね履歴(url)</label>
-                        <input type="text" name="url" class="form-control" value="{{user_likes_url}}"
+                        <input type="text" name="url" class="form-control" id="user_link" value="{{user_likes_url}}"
                             placeholder="https://qiita.com/your_name/like" />
+                        <input type="text" id="inputText" placeholder="user_id">
+                     
                     </div>
                     <div class="col-sm-2 mx-sm-auto mt-3">
                         <div class="form-group">
@@ -48,12 +50,12 @@
                     <div class="h5">
                         <label class="col-sm-2">推薦度</label>
                         <div class="col-sm-10  form-inline">
-                            <input class="col-sm-2 form-control" type="number" name="p_dist" class="form-control" style="color: black;"
-                                value=300 /> * (1 - distance)
-                            + 1 / <input class="col-sm-2 form-control" type="number" name="p_like" class="form-control" style="color: black;"
-                                value=10 /> * (いいね数)
-                            - 1 / <input class="col-sm-2 form-control" type="number" name="p_date" class="form-control"style="color: black;"
-                                value=30 /> * (日)
+                            <input class="col-sm-2 form-control" type="number" name="p_dist" class="form-control"
+                                style="color: black;" value=300 /> * (1 - distance)
+                            + 1 / <input class="col-sm-2 form-control" type="number" name="p_like" class="form-control"
+                                style="color: black;" value=10 /> * (いいね数)
+                            - 1 / <input class="col-sm-2 form-control" type="number" name="p_date" class="form-control"
+                                style="color: black;" value=30 /> * (日)
                         </div>
                     </div>
 
@@ -86,6 +88,21 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
+            <script>
+                $(function() {
+                
+                    // テキストフォームを監視して入力があるたびに実行
+                    $('#inputText').on('input change', function() {
+                
+                        // テキストを取得
+                        var param = $(this).val();
+                
+                        // リンクを書き換え
+                        $('#user_link').val('https://qiita.com/'+param+'/like');
+                    });
+                
+                });
+                </script>
 
     </body>
 
