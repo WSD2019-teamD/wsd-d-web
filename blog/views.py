@@ -46,12 +46,16 @@ def read_vec60(request):
             user_article_ids.append(article_id)
 
         records=RawFromApi.objects.using('mysql').filter(article_id__in=user_article_ids)
+        row_length=len(records)
         dict_similar_articles = dict()
-        loop=0
+    
+
         for record in records: 
-            origin_article_url=url_title_id_list[loop][0]
-            origin_article_title=url_title_id_list[loop][1]
-            origin_article_id=url_title_id_list[loop][2]
+
+            origin_article_url=record.url
+            origin_article_title=record.title
+            origin_article_id=record.article_id
+
 
             if record == None:
                 continue
@@ -81,7 +85,7 @@ def read_vec60(request):
                 
             #dict_similar_articles.update(json.loads(record.similar_articles)) 
             dict_similar_articles.update(tmp_articles) 
-            loop+=1
+           
      
         #推薦リストからいいね履歴を削除
         dict_similar_articles=drop_key(user_article_ids,dict_similar_articles)
@@ -131,11 +135,11 @@ def read_vec50(request):
         
         records=RawFromApi.objects.using('mysql').filter(article_id__in=user_article_ids)
         dict_similar_articles = dict()
-        loop=0
+       
         for record in records:
-            origin_article_url=url_title_id_list[loop][0]
-            origin_article_title=url_title_id_list[loop][1]
-            origin_article_id=url_title_id_list[loop][2]
+            origin_article_url=record.url
+            origin_article_title=record.title
+            origin_article_id=record.article_id
             
             if record == None:
                 continue
@@ -167,7 +171,7 @@ def read_vec50(request):
                 
             #dict_similar_articles.update(json.loads(record.similar_articles)) 
             dict_similar_articles.update(tmp_articles) 
-            loop+=1
+        
      
         #推薦リストからいいね履歴を削除
         dict_similar_articles=drop_key(user_article_ids,dict_similar_articles)
