@@ -133,23 +133,29 @@ def read_vec50(request):
             url_title_id_list.append([url,atag.string,article_id])
             user_article_ids.append(article_id)
         
-        records=RawFromApi.objects.using('mysql').filter(article_id__in=user_article_ids)
+        
         dict_similar_articles = dict()
-       
-        for record in records:
-            origin_article_url=record.url
-            origin_article_title=record.title
-            origin_article_id=record.article_id
+
+        loop=0
+        for url_title_id in url_title_id_list:
+            origin_article_url=url_title_id[0]
+            origin_article_title=url_title_id[1]
+            origin_article_id=url_title_id[2]
+
+            record=RawFromApi.objects.using('mysql').filter(article_id=str(origin_article_id)).first()
             
             if record == None:
+                loop+=1
                 continue
-
+            
+            tmp_articles = dict()
             if record.similar_articles != None:
                 tmp_articles = json.loads(record.similar_articles)
             else :
                 if record.similar_articles_vec60 != None:
                     tmp_articles = json.loads(record.similar_articles_vec60)
                 else:
+                    loop+=1
                     continue
 
             #辞書の追加（既存のキーはアップデートされる）
@@ -168,9 +174,11 @@ def read_vec50(request):
                     pass
                 
                 tmp_articles[key]=val_dic 
+               
                 
             #dict_similar_articles.update(json.loads(record.similar_articles)) 
             dict_similar_articles.update(tmp_articles) 
+            loop+=1
         
      
         #推薦リストからいいね履歴を削除
@@ -219,7 +227,7 @@ def sort_articles(dic,p_dist,p_like,p_date):
     articleId_scores.sort(key=lambda x: x[1],reverse=True)
 
     recommend_articles=list()
-    for articleId_score in articleId_scores[:99]:
+    for articleId_score in articleId_scores:
         recommend_articles.append(dic[articleId_score[0]])
 
     return  recommend_articles
