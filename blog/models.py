@@ -17,6 +17,7 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+
 class RawFromApi(models.Model):
     article_id = models.CharField(unique=True, max_length=50, blank=True, null=True)
     title = models.CharField(max_length=300, blank=True, null=True)
@@ -31,16 +32,29 @@ class RawFromApi(models.Model):
     html = models.TextField(blank=True, null=True)
     tokens = models.TextField(blank=True, null=True)
     similar_articles = models.TextField(blank=True, null=True)
+    topic_id = models.IntegerField(blank=True, null=True)
+    similar_articles_vec60 = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'raw_from_api'
 
 
-# class Test(models.Model):
-#     id = models.IntegerField(blank=True, null=True)
-#     name = models.CharField(max_length=10, blank=True, null=True)
+class ArticleVector(models.Model):
+    article_id = models.CharField(unique=True, max_length=50, blank=True, null=True)
+    vector = models.TextField(blank=True, null=True)
 
-#     class Meta:
-#         managed = False
-#         db_table = 'test'
+    class Meta:
+        managed = False
+        db_table = 'article_vector'
+
+class ArticleSimilarArticles(models.Model):
+    article_id = models.CharField(max_length=50, blank=True, null=True)
+    similar_article_id = models.CharField(max_length=50, blank=True, null=True)
+    distance = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'article_similar_articles'
+
+

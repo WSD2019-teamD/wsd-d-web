@@ -27,6 +27,8 @@ class Migration(migrations.Migration):
                 ('html', models.TextField(blank=True, null=True)),
                 ('tokens', models.TextField(blank=True, null=True)),
                 ('smilar_articles', models.TextField(blank=True, null=True)),
+                ('topic_id', models.IntegerField(blank=True, null=True)),
+                ('smilar_articles_vec60', models.TextField(blank=True, null=True)),
             ],
             options={
                 'db_table': 'raw_from_api',
